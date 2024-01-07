@@ -59,7 +59,7 @@ def main():
         filter_prompt = "Be an extremely strict filter where you are super critical of all aspects of an idea."
 
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
+        df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")
 
         # filtered_ideas = None
         # keep_ideas = None
