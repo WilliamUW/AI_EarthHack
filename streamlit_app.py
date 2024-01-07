@@ -65,8 +65,19 @@ def main():
         # keep_ideas = None
         # all_ideas = None
 
+        # Check if the DataFrame contains the columns "problem" and "solution"
+        if "problem" in df.columns and "solution" in df.columns:
+            st.success(
+                "Valid CSV! The CSV file contains the columns 'problem' and 'solution'."
+            )
+        else:
+            st.error(
+                "Invalid CSV: The CSV file does not contain the required columns 'problem' and 'solution'."
+            )
+            df = None
+
         if st.button(
-            f"Proceed with the uploaded CSV file? It will require {df[df.columns[0]].count()} API calls."
+            f"Proceed with the uploaded CSV file? It will require {df[df.columns[0]].count()} API calls. Estimated time: {df[df.columns[0]].count() * 3} seconds."
         ):
             # Add columns for 'isFiltered' and 'analysis' to the DataFrame
             df["isFiltered"] = ""
@@ -74,6 +85,8 @@ def main():
 
             # Display problem-solution pairs as cards in a flexible grid
             for idx, row in df.iterrows():
+                if idx > 50:
+                    break
                 if type(row["problem"]) is float or row["problem"] == "":
                     continue
                 truncated_problem = row["problem"][:80] + "..."
