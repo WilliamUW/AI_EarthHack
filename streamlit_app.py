@@ -56,7 +56,7 @@ def main():
         st.write("You selected a normal filter.")
     elif filter_level == "Strict Filter":
         st.write("You selected a strict filter.")
-        filter_prompt = "Be an extremely strict filter where you are super critical of all aspects of an idea."
+        filter_prompt = "Be an extremely strict filter where very little ideas will pass and you are super critical of all aspects of an idea such the business model and whether an existing solution already exists."
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")
@@ -78,11 +78,14 @@ def main():
 
         # Add a number input for setting a threshold
         threshold = st.number_input(
-            "Set the maximum number of ideas you want to process", value=50, step=1
+            "Set the maximum number of ideas you want to process",
+            value=10,
+            step=1,
+            max_value=df[df.columns[0]].count(),
         )
 
         if st.button(
-            f"Proceed with the uploaded CSV file? It will require {df[df.columns[0]].count()} API calls. Estimated time: {df[df.columns[0]].count() * 3} seconds."
+            f"Proceed with the uploaded CSV file? It will require {min(threshold, df[df.columns[0]].count())} API calls. Estimated time: {min(threshold, df[df.columns[0]].count()) * 3} seconds."
         ):
             # Add columns for 'isFiltered' and 'analysis' to the DataFrame
             df["isFiltered"] = ""
