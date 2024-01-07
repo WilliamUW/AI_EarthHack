@@ -76,6 +76,11 @@ def main():
             )
             df = None
 
+        # Add a number input for setting a threshold
+        threshold = st.number_input(
+            "Set the maximum number of ideas you want to process", value=50, step=1
+        )
+
         if st.button(
             f"Proceed with the uploaded CSV file? It will require {df[df.columns[0]].count()} API calls. Estimated time: {df[df.columns[0]].count() * 3} seconds."
         ):
@@ -85,7 +90,7 @@ def main():
 
             # Display problem-solution pairs as cards in a flexible grid
             for idx, row in df.iterrows():
-                if idx > 50:
+                if idx >= threshold:
                     break
                 if type(row["problem"]) is float or row["problem"] == "":
                     continue
