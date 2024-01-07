@@ -44,7 +44,9 @@ def main():
     filter_prompt = ""
 
     filter_level = st.selectbox(
-        "Select Filtering Level:", ["Loose Filter", "Normal Filter", "Strict Filter"]
+        "Select Filtering Level:",
+        ["Loose Filter", "Normal Filter", "Strict Filter"],
+        index=1,
     )
 
     if filter_level == "Loose Filter":
@@ -54,12 +56,14 @@ def main():
         st.write("You selected a normal filter.")
     elif filter_level == "Strict Filter":
         st.write("You selected a strict filter.")
-        filter_prompt = (
-            "Be a strict filter where you are super critical of all aspects of an idea."
-        )
+        filter_prompt = "Be an extremely strict filter where you are super critical of all aspects of an idea."
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
+
+        # filtered_ideas = None
+        # keep_ideas = None
+        # all_ideas = None
 
         if st.button(
             f"Proceed with the uploaded CSV file? It will require {df[df.columns[0]].count()} API calls."
@@ -81,7 +85,7 @@ def main():
                         [
                             {
                                 "role": "system",
-                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. You will weed out ideas that are sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details). This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. {filter_prompt} In separate lines, mention 1. whether the idea is one of sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (Yes - remove idea or No - keep idea), 2. a viability score out of 100 and 3. concise bullet points supporting whether to keep or remove the idea from 1.",
+                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. {filter_prompt} In separate lines, mention 1. whether the idea falls under one of the categories: sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details). Return either (Yes - remove idea) if it falls under one of those categories or (No - keep idea) if it does not. 2. a viability score out of 100. 3. concise bullet points supporting whether to keep or remove the idea from 1.",
                             },
                             {
                                 "role": "assistant",
@@ -146,6 +150,22 @@ def main():
             all_ideas = df[df["id"] != None]
             st.subheader("All Ideas")
             st.dataframe(all_ideas)
+
+        # # Export dataframes to CSV files
+        # if st.button("Export Removed Ideas as CSV"):
+        #     with st.spinner("Exporting Removed Ideas..."):
+        #         filtered_ideas.to_csv("removed_ideas.csv", index=False)
+        #     st.success("Removed Ideas exported successfully!")
+
+        # if st.button("Export Remaining Ideas as CSV"):
+        #     with st.spinner("Exporting Remaining Ideas..."):
+        #         keep_ideas.to_csv("remaining_ideas.csv", index=False)
+        #     st.success("Remaining Ideas exported successfully!")
+
+        # if st.button("Export All Ideas as CSV"):
+        #     with st.spinner("Exporting All Ideas..."):
+        #         all_ideas.to_csv("all_ideas.csv", index=False)
+        #     st.success("All Ideas exported successfully!")
 
 
 if __name__ == "__main__":
