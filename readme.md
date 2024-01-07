@@ -7,6 +7,7 @@ Welcome to SWIFT, your AI-powered partner in sustainable innovation! SWIFT is a 
 - 🔍 Specific Criteria Framework: SWIFT employs an AI model fine-tuned for sustainability, automatically identifying and filtering out vague or irrelevant ideas.
 - 🌐 Real-Time Web Integration: Stay up-to-date with the latest trends and data in sustainability through SWIFT's web browsing feature, enriching your evaluations.
 - 📊 Customizable Strictness: Tailor the tool's filtering criteria to your specific needs, from broad exploration to in-depth analysis.
+- 📱 Platform-agnostic: Use on any device with access to a browser! Mobile, tablet, desktop, ...
 
 ## 🚀 How to Get Started 🚀
 
