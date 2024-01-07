@@ -1,3 +1,5 @@
 
 .env
 .streamlit/secrets.toml
+*.pyc
+src/config/config.yaml
