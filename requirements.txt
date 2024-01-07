@@ -1,0 +1,4 @@
+openai==0.28.0
+pandas==1.5.3
+python-decouple==3.8
+streamlit==1.18.1
