@@ -3,3 +3,4 @@
 .streamlit/secrets.toml
 *.pyc
 src/config/config.yaml
+web-agent/config/config.yaml
