@@ -16,7 +16,7 @@ async def send_message(message_log):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-1106",  # The name of the OpenAI chatbot model to use
         messages=message_log,  # The conversation history up to this point, as a list of dictionaries
-        max_tokens=100,  # The maximum number of tokens (words or subwords) in the generated response
+        max_tokens=200,  # The maximum number of tokens (words or subwords) in the generated response
         stop=None,  # The stopping sequence for the generated response, if any (not used here)
         temperature=0.7,  # The "creativity" of the generated response (higher temperature = more creative)
     )
@@ -36,27 +36,31 @@ def main():
     st.subheader("(Sustainable Workflow for Idea Filtering and Testing)")
 
     # Upload a CSV file
-    uploaded_file = st.file_uploader(
+    uploaded_file = st.sidebar.file_uploader(
         "Upload a CSV file with the columns: 1. ID, 2. Problem, 3. Solution.",
         type=["csv"],
     )
 
     filter_prompt = ""
 
-    filter_level = st.selectbox(
+    filter_level = st.sidebar.selectbox(
         "Select Filtering Level:",
         ["Loose Filter", "Normal Filter", "Strict Filter"],
         index=1,
     )
 
     if filter_level == "Loose Filter":
-        st.write("You selected a loose filter where most ideas will pass.")
+        st.sidebar.write("You selected a loose filter where most ideas will pass.")
         filter_prompt = "Be a loose filter where most ideas will pass."
     elif filter_level == "Normal Filter":
-        st.write("You selected a normal filter.")
+        st.sidebar.write("You selected a normal filter.")
     elif filter_level == "Strict Filter":
-        st.write("You selected a strict filter.")
+        st.sidebar.write("You selected a strict filter.")
         filter_prompt = "Be an extremely strict filter where very little ideas will pass and you are super critical of all aspects of an idea such the business model and whether an existing solution already exists."
+
+    formatting = st.sidebar.text_input("Analysis Delivery", "Concise bullet points")
+
+    criterias = st.sidebar.text_input("Evaluation Criterias", "Environmental impact, social impact, economic viability, scalability, regulatory compliance")
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")
@@ -67,17 +71,17 @@ def main():
 
         # Check if the DataFrame contains the columns "problem" and "solution"
         if "problem" in df.columns and "solution" in df.columns:
-            st.success(
+            st.sidebar.success(
                 "Valid CSV! The CSV file contains the columns 'problem' and 'solution'."
             )
         else:
-            st.error(
+            st.sidebar.error(
                 "Invalid CSV: The CSV file does not contain the required columns 'problem' and 'solution'."
             )
             df = None
 
         # Add a number input for setting a threshold
-        threshold = st.number_input(
+        threshold = st.sidebar.number_input(
             "Set the maximum number of ideas you want to process",
             value=10,
             step=1,
@@ -87,6 +91,9 @@ def main():
         if st.button(
             f"Proceed with the uploaded CSV file? It will require {min(threshold, df[df.columns[0]].count())} API calls. Estimated time: {min(threshold, df[df.columns[0]].count()) * 3} seconds."
         ):
+            st.success(
+                "Processing right now!"
+            )
             # Add columns for 'isFiltered' and 'analysis' to the DataFrame
             df["isFiltered"] = ""
             df["analysis"] = ""
@@ -106,7 +113,7 @@ def main():
                         [
                             {
                                 "role": "system",
-                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. {filter_prompt} In separate lines, mention 1. whether the idea falls under one of the categories: sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details). Return either (Yes - remove idea) if it falls under one of those categories or (No - keep idea) if it does not. 2. a viability score out of 100. 3. concise bullet points supporting whether to keep or remove the idea from 1.",
+                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. {filter_prompt} In separate lines, mention 1. whether the idea falls under one of the categories: sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details). Return either (Yes - remove idea.) if it falls under one of those categories or (No - keep idea.) if it does not. 2. a SWIFT score out of 100 specific to the circular economy as to whether to filter out the idea (100 - keep, 0 - filter out). 3. {formatting} supporting whether to keep or remove the idea from 1. Evaluate on the following criterias: {criterias}. Finally, write a one sentence conclusion that explains why the idea is filtered out and the filter score using the criterias listed.",
                             },
                             {
                                 "role": "assistant",
