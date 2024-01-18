@@ -79,7 +79,7 @@ if prompt := st.chat_input(placeholder="What is this data about?"):
 
     llm = ChatOpenAI(
         temperature=0,
-        model="gpt-3.5-turbo-0613",
+        model="gpt-4-1106-preview",
         openai_api_key=openai_api_key,
         streaming=True,
     )
