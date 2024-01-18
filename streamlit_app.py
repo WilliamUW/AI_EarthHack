@@ -9,14 +9,14 @@ openai.api_key = config("OPENAI_API_KEY")
 
 
 # Function to send a message to the OpenAI chatbot model and return its response
-async def send_message(message_log):
+async def send_message(message_log, maxToken):
     print(message_log)
 
     # Use OpenAI's ChatCompletion API to get the chatbot's response
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-1106",  # The name of the OpenAI chatbot model to use
         messages=message_log,  # The conversation history up to this point, as a list of dictionaries
-        max_tokens=200,  # The maximum number of tokens (words or subwords) in the generated response
+        max_tokens=maxToken,  # The maximum number of tokens (words or subwords) in the generated response
         stop=None,  # The stopping sequence for the generated response, if any (not used here)
         temperature=0.7,  # The "creativity" of the generated response (higher temperature = more creative)
     )
@@ -37,7 +37,7 @@ def main():
 
     # Upload a CSV file
     uploaded_file = st.sidebar.file_uploader(
-        "Upload a CSV file with the columns: 1. ID, 2. Problem, 3. Solution.",
+        "Upload a CSV file with the columns: 1. ID, 2. Problem, 3. Solution. [Example](https://github.com/WilliamUW/AI_EarthHack/blob/main/20%20AI%20EarthHack%20Dataset%20copy.csv)",
         type=["csv"],
     )
 
@@ -60,7 +60,18 @@ def main():
 
     formatting = st.sidebar.text_input("Analysis Delivery", "Concise bullet points")
 
-    criterias = st.sidebar.text_input("Evaluation Criterias", "Environmental impact, social impact, economic viability, scalability, regulatory compliance")
+    criterias = st.sidebar.text_input(
+        "Evaluation Criterias",
+        "Environmental impact, economic viability, scalability",
+    )
+
+    # Add a number input for setting a threshold
+    maxToken = st.sidebar.number_input(
+        "Max length of analysis",
+        value=300,
+        step=1,
+        max_value=1000,
+    )
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")
@@ -91,9 +102,9 @@ def main():
         if st.button(
             f"Proceed with the uploaded CSV file? It will require {min(threshold, df[df.columns[0]].count())} API calls. Estimated time: {min(threshold, df[df.columns[0]].count()) * 3} seconds."
         ):
-            st.success(
-                "Processing right now!"
-            )
+            st.success("Processing right now!")
+            gif_url = "https://i.giphy.com/o0vwzuFwCGAFO.webp"  # Replace with your GIF URL
+            st.image(gif_url)
             # Add columns for 'isFiltered' and 'analysis' to the DataFrame
             df["isFiltered"] = ""
             df["analysis"] = ""
@@ -122,7 +133,8 @@ def main():
                                 + "\n Solution: "
                                 + row["solution"],
                             },
-                        ]
+                        ],
+                        maxToken,
                     )
                 )
 
@@ -178,6 +190,9 @@ def main():
             all_ideas = df[df["id"] != None]
             st.subheader("All Ideas")
             st.dataframe(all_ideas)
+
+            gif_url = "https://i.giphy.com/3LMuVfcoGXOV2OO51k.webp"  # Replace with your GIF URL
+            st.image(gif_url)   
 
         # # Export dataframes to CSV files
         # if st.button("Export Removed Ideas as CSV"):
