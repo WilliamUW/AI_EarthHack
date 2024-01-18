@@ -32,7 +32,7 @@ async def send_message(message_log):
 
 # Streamlit app
 def main():
-    st.title("Welcome to SWIFT! ")
+    st.title("Welcome to SWIFT! 🔰")
     st.subheader("(Sustainable Workflow for Idea Filtering and Testing)")
 
     # Upload a CSV file
@@ -113,7 +113,7 @@ def main():
                         [
                             {
                                 "role": "system",
-                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. {filter_prompt} In separate lines, mention 1. whether the idea falls under one of the categories: sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details). Return either (Yes - remove idea.) if it falls under one of those categories or (No - keep idea.) if it does not. 2. a SWIFT score out of 100 specific to the circular economy as to whether to filter out the idea (100 - keep, 0 - filter out). 3. {formatting} supporting whether to keep or remove the idea from 1. Evaluate on the following criterias: {criterias}. Finally, write a one sentence conclusion that explains why the idea is filtered out and the filter score using the criterias listed.",
+                                "content": f"You are a sustainability expert and professional idea evaluator and filterer. You will receive a problem followed by a solution. This filtration system helps concentrate human evaluators' time and resources on concepts that are meticulously crafted, well-articulated, and hold tangible relevance. Filtering strictness: {filter_prompt}. In separate lines, mention 3 points. Point 1 - Filter Out Yes or No. Filter out if the idea falls under one of the categories: sloppy, off-topic (i.e., not sustainability related), unsuitable, or vague (such as the over-generic content that prioritizes form over substance, offering generalities instead of specific details) as well as evaluation criterias listed below. Return either (Yes - remove idea.) if it falls under one of those categories or (No - keep idea.) if it does not. Point 2 - SWIFT Score: a SWIFT score out of 100 as to whether to filter out the idea (100 - keep, 0 - filter out). This should align with point 1. Point 3 - Analysis Explanation: {formatting} supporting whether to keep or remove the idea from 1. Evaluate on the following criterias: {criterias}. Finally, write a one sentence conclusion that explains why the idea is filtered out and the filter score using the criterias listed. Output format: In separate lines, mention the 3 points: 1. Filter Out: Yes or No. 2. SWIFT Score: Out of 100. 3. Analysis Explanation: 4. Conclusion:",
                             },
                             {
                                 "role": "assistant",
