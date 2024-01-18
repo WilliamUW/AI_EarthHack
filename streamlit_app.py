@@ -58,7 +58,7 @@ def main():
         st.sidebar.write("You selected a strict filter.")
         filter_prompt = "Be an extremely strict filter where very little ideas will pass and you are super critical of all aspects of an idea such the business model and whether an existing solution already exists."
 
-    formatting = st.sidebar.text_input("Analysis Delivery", "Concise bullet points")
+    formatting = st.sidebar.text_input("Analysis Delivery Format", "Concise bullet points")
 
     criterias = st.sidebar.text_input(
         "Evaluation Criterias",
@@ -67,7 +67,7 @@ def main():
 
     # Add a number input for setting a threshold
     maxToken = st.sidebar.number_input(
-        "Max length of analysis",
+        "Preferred Length of Analysis",
         value=300,
         step=1,
         max_value=1000,
@@ -93,7 +93,7 @@ def main():
 
         # Add a number input for setting a threshold
         threshold = st.sidebar.number_input(
-            "Set the maximum number of ideas you want to process",
+            "Number of ideas to process",
             value=10,
             step=1,
             max_value=df[df.columns[0]].count(),
